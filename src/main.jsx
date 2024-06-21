@@ -7,6 +7,7 @@ import Root from './components/Root/Root';
 import Home from './components/Home/Home';
 import Login from './components/Login/Login';
 import Register from './components/Register/Register';
+import HeroRegister from './components/HeroRegister/HeroRegister';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: '/register',
         element: <Register></Register>,
+      },
+      {
+        path: '/heroregister',
+        element: <HeroRegister></HeroRegister>,
       },
     ],
   },
