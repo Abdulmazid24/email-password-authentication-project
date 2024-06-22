@@ -1,3 +1,6 @@
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import auth from '../../firebase/firebase.config';
+
 const HeroRegister = () => {
   const handleRegister = e => {
     e.preventDefault();
@@ -5,6 +8,13 @@ const HeroRegister = () => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(result => {
+        console.log(result.user);
+      })
+      .then(error => {
+        console.log(error);
+      });
   };
   return (
     <div className="hero min-h-screen bg-slate-300 ">
@@ -13,8 +23,8 @@ const HeroRegister = () => {
           <h1 className="text-5xl font-bold">Register now!</h1>
           <p className="py-6">
             Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
+            excepturi exercitationem quasi.
+            <br /> In deleniti eaque aut repudiandae et a id nisi.
           </p>
         </div>
         <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-slate-400">
