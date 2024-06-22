@@ -1,11 +1,15 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import auth from '../../firebase/firebase.config';
 import { useState } from 'react';
+import { IoEyeSharp } from 'react-icons/io5';
+import { IoEyeOffSharp } from 'react-icons/io5';
 
 const HeroRegister = () => {
   const [heroRegisteError, setHeroRegisterError] = useState('');
   const [success, setSuccess] = useState('');
   console.log(heroRegisteError);
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleRegister = e => {
     e.preventDefault();
 
@@ -16,6 +20,11 @@ const HeroRegister = () => {
     if (password.length < 6) {
       setHeroRegisterError(
         'password should be at least 6 characters or longer'
+      );
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      setHeroRegisterError(
+        'Your password should have at least one Uppercase character'
       );
       return;
     }
@@ -60,13 +69,27 @@ const HeroRegister = () => {
               <label className="label">
                 <span className="label-text">Password</span>
               </label>
-              <input
-                type="password"
-                placeholder="password"
-                name="password"
-                className="input input-bordered"
-                required
-              />
+
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="password"
+                  name="password"
+                  className="input input-bordered w-full"
+                  required
+                />
+                <span
+                  className="absolute top-3 right-3 text-3xl"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <IoEyeSharp></IoEyeSharp>
+                  ) : (
+                    <IoEyeOffSharp></IoEyeOffSharp>
+                  )}
+                </span>
+              </div>
+              <br />
               <label className="label">
                 <a href="#" className="label-text-alt link link-hover">
                   Forgot password?
