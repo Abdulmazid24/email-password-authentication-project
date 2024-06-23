@@ -1,14 +1,20 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
+} from 'firebase/auth';
 import auth from '../../firebase/firebase.config';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { IoEyeSharp } from 'react-icons/io5';
 import { IoEyeOffSharp } from 'react-icons/io5';
+import { Link } from 'react-router-dom';
 
 const HeroRegister = () => {
   const [heroRegisteError, setHeroRegisterError] = useState('');
   const [success, setSuccess] = useState('');
   console.log(heroRegisteError);
   const [showPassword, setShowPassword] = useState(false);
+  const emailRef = useRef(null);
 
   const handleRegister = e => {
     e.preventDefault();
@@ -33,11 +39,42 @@ const HeroRegister = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(result => {
         console.log(result.user);
-        setSuccess('User Created Successfully');
+
+        if (result.user.emailVerified) {
+          setSuccess('User Created Successfully');
+        } else {
+          alert('Please verify your email address');
+        }
+
+        // send varification email:
+        sendEmailVerification(result.user).then(() => {
+          alert('Please Check your email or varify your account');
+        });
       })
       .catch(error => {
         console.log(error.message);
         setHeroRegisterError(error.message);
+      });
+  };
+
+  const handleResetPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      console.log('Please provider an  email', emailRef.current.value);
+      return;
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)
+    ) {
+      console.log('please write a valid email');
+      return;
+    }
+    // send validation email
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert('please check your email');
+      })
+      .catch(error => {
+        console.log(error);
       });
   };
   return (
@@ -60,6 +97,7 @@ const HeroRegister = () => {
               <input
                 type="email"
                 name="email"
+                ref={emailRef}
                 placeholder="email"
                 className="input input-bordered"
                 required
@@ -91,7 +129,11 @@ const HeroRegister = () => {
               </div>
               <br />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a
+                  onClick={handleResetPassword}
+                  href="#"
+                  className="label-text-alt link link-hover"
+                >
                   Forgot password?
                 </a>
               </label>
@@ -102,7 +144,14 @@ const HeroRegister = () => {
               </button>
             </div>
           </form>
-
+          <div className="text-center">
+            <p>
+              Already have an account?
+              <Link to="/login" className="text-yellow-300 ml-2">
+                Login
+              </Link>
+            </p>
+          </div>
           <div className="text-center pb-4">
             {heroRegisteError && (
               <p className="text-red-800">{heroRegisteError}</p>
